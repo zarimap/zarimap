@@ -1,12 +1,23 @@
-// assets/js/map-logic.js
+// --- ステップ1：地図の背景を切り替える ---
+let tileUrl = (currentLang === 'ja') 
+    ? 'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png' // 日本語地図
+    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'; // 英語地図
 
-// ① 地図の土台を作る（緯度, 経度, ズームレベル）
-const map = L.map('map').setView([35.6895, 139.6917], 13);
-// L.tileLayer の部分をこれに書き換え
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '© OpenStreetMap contributors © CARTO',
-    subdomains: 'abcd',
-    maxZoom: 20
-}).addTo(map);
+L.tileLayer(tileUrl, { attribution: '...' }).addTo(map);
 
-// ③ この後に fetch(...) などの処理を書く
+// --- ステップ2：CSVを読み込んでピンを立てる ---
+fetch('../../assets/data/zarigani.csv')
+  .then(response => response.text())
+  .then(csvData => {
+    // ...（行に分ける処理）...
+    
+    // --- ステップ3：ピンの中身を切り替える ---
+    // ここで currentLang を使って、Excelのどの列を使うか決める
+    const title = (currentLang === 'ja') ? row.name_ja : row.name_en;
+    const info = (currentLang === 'ja') ? row.desc_ja : row.desc_en;
+
+    // ピンを立てる（座標は世界共通なので変わらない！）
+    L.marker([lat, lng])
+        .addTo(map)
+        .bindPopup(`<b>${title}</b><br>${info}`);
+  });
