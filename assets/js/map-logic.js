@@ -1,23 +1,19 @@
-// --- ステップ1：地図の背景を切り替える ---
-let tileUrl = (currentLang === 'ja') 
-    ? 'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png' // 日本語地図
-    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'; // 英語地図
+// 1. 最初に見せる場所（緯度, 経度, ズームレベル）
+// [35.6895, 139.6917] を自分の好きな場所の数字に書き換えてください！
+const map = L.map('map').setView([35.6895, 139.6917], 15); 
 
-L.tileLayer(tileUrl, { attribution: '...' }).addTo(map);
+// 2. 言語によって地図の「背景（タイル）」を切り替える
+let tileUrl;
+let attribution;
 
-// --- ステップ2：CSVを読み込んでピンを立てる ---
-fetch('../../assets/data/zarigani.csv')
-  .then(response => response.text())
-  .then(csvData => {
-    // ...（行に分ける処理）...
-    
-    // --- ステップ3：ピンの中身を切り替える ---
-    // ここで currentLang を使って、Excelのどの列を使うか決める
-    const title = (currentLang === 'ja') ? row.name_ja : row.name_en;
-    const info = (currentLang === 'ja') ? row.desc_ja : row.desc_en;
+if (currentLang === 'ja') {
+    // 日本語版：国土地理院の淡色地図（日本語でシンプル！）
+    tileUrl = 'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png';
+    attribution = '© 国土地理院';
+} else {
+    // 英語版：CartoDBのシンプルな地図（英語表記）
+    tileUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+    attribution = '© OpenStreetMap contributors © CARTO';
+}
 
-    // ピンを立てる（座標は世界共通なので変わらない！）
-    L.marker([lat, lng])
-        .addTo(map)
-        .bindPopup(`<b>${title}</b><br>${info}`);
-  });
+L.tileLayer(tileUrl, { attribution: attribution }).addTo(map);
