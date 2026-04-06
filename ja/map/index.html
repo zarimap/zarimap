@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <title>Zarimap - ザリガニ検索マップ</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="../../assets/css/style.css" />
 </head>
@@ -10,7 +11,16 @@
         <h1>Zarimap</h1>
     </header>
     
-    <div id="map"></div>
+    <div class="main-container">
+        <div id="map"></div>
+
+        <div id="data-panel">
+            <h2>詳細情報</h2>
+            <div id="info-content">
+                <p>マップのピンをクリックすると、ここに詳しい情報が表示されます。</p>
+            </div>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
