@@ -13,8 +13,8 @@ let attribution;
 
 if (typeof currentLang !== 'undefined' && currentLang === 'ja') {
     // 日本語版：国土地理院の淡色地図
-    tileUrl = 'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png';
-    attribution = '© 国土地理院';
+    tileUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+    attribution = '© OpenStreetMap contributors © CARTO';
 } else {
     // 英語版：CartoDBのシンプルな地図
     tileUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
