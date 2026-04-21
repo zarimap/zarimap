@@ -1,99 +1,53 @@
-/* 1. 画面全体の土台（スクロールさせない） */
+/* 全体のレイアウト */
 body {
     margin: 0;
-    padding: 0;
     display: flex;
     flex-direction: column;
-    height: 100vh; /* 画面の高さ100% */
+    height: 100vh;
     overflow: hidden;
-    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
 }
 
-/* 2. ヘッダー */
 header {
-    background-color: #e67e22; /* ザリガニオレンジ */
+    background-color: #e67e22;
     color: white;
     padding: 10px 20px;
-    flex-shrink: 0; /* 高さを固定 */
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    flex-shrink: 0;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 1.5rem;
-}
-
-/* 3. メインコンテンツ（マップとパネルを包む箱） */
 .main-container {
     display: flex;
-    flex-direction: row; /* パソコンでは横並び */
-    flex-grow: 1;        /* 残りの高さを全部使う */
+    flex-direction: row;
+    flex-grow: 1;
     overflow: hidden;
 }
 
-/* 4. マップの基本設定（共通） */
 #map {
     flex-basis: 66.6%;
     width: 66.6%;
     height: 100%;
-    filter: saturate(1.8) brightness(1.08) contrast(1.1);
 }
 
-/* 5. 日本語版 (lang="ja") の時だけ、水場を強調するフィルターをかける */
+/* 日本語版のみ：道路の黄色・緑を飛ばして水場(青)を出す */
 html[lang="ja"] #map {
-    filter: brightness(1.05) contrast(1.1) saturate(1.5);
+    filter: grayscale(0.5) contrast(1.2) brightness(1.15) saturate(2.5) hue-rotate(-5deg);
 }
 
-/* 6. 英語版 (lang="en") の時は、フィルターをかけない（自然なOSMのまま） */
-html[lang="en"] #map {
-    filter: none;
-}
-
-/* 5. 右側データパネル（1/3の幅） */
 #data-panel {
     flex-basis: 33.3%;
     width: 33.3%;
-    background-color: #fff;
+    background-color: #ffffff;
     padding: 20px;
-    overflow-y: auto; /* 中身が増えたらここだけスクロール */
-    border-left: 3px solid #e67e22;
-    box-sizing: border-box;
+    overflow-y: auto;
+    border-left: 2px solid #e67e22;
 }
 
-/* 6. リストの見た目（生息地一覧用） */
-#location-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+/* 一覧・詳細の装飾（前回の追加分をここにまとめる） */
+#location-list { list-style: none; padding: 0; }
+#location-list li { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+#location-list li:hover { background-color: #fdf2e9; }
 
-#location-list li {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-#location-list li:hover {
-    background-color: #fdf2e9;
-}
-
-/* 7. 【スマホ・縦画面用】の切り替え設定 */
+/* スマホ対応 */
 @media (max-width: 768px) {
-    .main-container {
-        flex-direction: column; /* スマホでは縦並び */
-    }
-    
-    #map {
-        flex-basis: 50%; /* 上半分 */
-        width: 100%;
-    }
-    
-    #data-panel {
-        flex-basis: 50%; /* 下半分 */
-        width: 100%;
-        border-left: none;
-        border-top: 3px solid #e67e22;
-    }
+    .main-container { flex-direction: column; }
+    #map, #data-panel { flex-basis: 50%; width: 100%; border-left: none; border-top: 2px solid #e67e22; }
 }
