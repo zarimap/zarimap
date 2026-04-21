@@ -53,18 +53,23 @@ window.focusMarker = function(index) {
  */
 function showDetails(loc) {
     const infoContent = document.getElementById('info-content');
-    const detailHeader = (currentLang === 'ja') ? '詳細情報' : 'Details';
+    const detailHeader = (currentLang === 'ja') ? '調査レポート' : 'Research Report';
     const name = (currentLang === 'ja') ? loc.name_ja : loc.name_en;
     const desc = (currentLang === 'ja') ? loc.desc_ja : loc.desc_en;
 
     infoContent.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3 style="margin:0;">${detailHeader}</h3>
-            <button onclick="showDefaultList()" style="cursor:pointer; font-size:24px; border:none; background:none; color:#e67e22;">&times;</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <span style="background:#e67e22; color:white; padding:2px 8px; border-radius:4px; font-size:0.8rem;">Data Card</span>
+            <button onclick="showDefaultList()" style="cursor:pointer; font-size:28px; border:none; background:none; color:#999;">&times;</button>
         </div>
-        <hr>
         <h4>${name}</h4>
-        <p>${desc}</p>
+        <div class="description-area">
+            ${desc}
+        </div>
+        <hr style="border:0; border-top:1px dashed #ccc; margin:20px 0;">
+        <p style="font-size:0.8rem; color:#999;">
+            Location: ${loc.lat.toFixed(4)}, ${loc.lng.toFixed(4)}
+        </p>
     `;
 }
 
