@@ -53,37 +53,37 @@ window.focusMarker = function(index) {
  */
 function showDetails(loc) {
     const infoContent = document.getElementById('info-content');
-    const detailHeader = (currentLang === 'ja') ? '調査レポート' : 'Research Report';
     const name = (currentLang === 'ja') ? loc.name_ja : loc.name_en;
     const desc = (currentLang === 'ja') ? loc.desc_ja : loc.desc_en;
+    const btnLabel = (currentLang === 'ja') ? '詳細サイトへ移動' : 'Visit Detail Site';
 
-    infoContent.innerHTML = `
+    let html = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <span style="background:#e67e22; color:white; padding:2px 8px; border-radius:4px; font-size:0.8rem;">Data Card</span>
             <button onclick="showDefaultList()" style="cursor:pointer; font-size:28px; border:none; background:none; color:#999;">&times;</button>
         </div>
         <h4>${name}</h4>
-        <div class="description-area">
-            ${desc}
-        </div>
-        <hr style="border:0; border-top:1px dashed #ccc; margin:20px 0;">
-        <p style="font-size:0.8rem; color:#999;">
-            Location: ${loc.lat.toFixed(4)}, ${loc.lng.toFixed(4)}
-        </p>
+        <p style="white-space: pre-wrap;">${desc}</p>
     `;
-}
 
+    // URLがある場合のみボタンを表示
+    if (loc.url && loc.url !== "") {
+        html += `
+            <a href="${loc.url}" target="_blank" rel="noopener noreferrer" 
+               style="display:block; background:#e67e22; color:white; text-align:center; padding:12px; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:20px;">
+               ${btnLabel}
+            </a>
+        `;
+    }
+
+    infoContent.innerHTML = html;
+}
 // 3. CSVファイルを読み込んで処理する
 // パスは index.html から見た相対パス（../../assets/data/zarigani.csv）
 fetch('../../assets/data/zarigani.csv')
-    .then(response => {
-        if (!response.ok) throw new Error('CSV file not found');
-        return response.text();
-    })
+    .then(response => response.text())
     .then(csvData => {
         const rows = csvData.trim().split('\n');
-        
-        // CSVの各行を解析
         for (let i = 1; i < rows.length; i++) {
             const columns = rows[i].split(',');
             if (columns.length < 6) continue;
@@ -94,25 +94,25 @@ fetch('../../assets/data/zarigani.csv')
                 lat: parseFloat(columns[2]),
                 lng: parseFloat(columns[3]),
                 desc_ja: columns[4].trim(),
-                desc_en: columns[5].trim()
+                desc_en: columns[5].trim(),
+                url: columns[6] ? columns[6].trim() : "" // 7番目の列（URL）を取得
             };
 
-            // 配列に保存
             allLocations.push(locData);
 
-            // マップにピン（マーカー）を立てる
             const marker = L.marker([locData.lat, locData.lng]).addTo(map);
-            
-            // ピンをクリックした時に詳細を表示
+
+            // --- 変更点2: 吹き出し（ポップアップ）にリンクを追加 ---
+            const popupLabel = (currentLang === 'ja') ? '詳細を見る' : 'Read More';
+            let popupHtml = `<b>${(currentLang === 'ja' ? locData.name_ja : locData.name_en)}</b><br>`;
+            if (locData.url) {
+                popupHtml += `<a href="${locData.url}" target="_blank" rel="noopener noreferrer">${popupLabel}</a>`;
+            }
+            marker.bindPopup(popupHtml);
+
             marker.on('click', () => {
                 showDetails(locData);
             });
         }
-
-        // 読み込み完了後に一覧を初期表示
         showDefaultList();
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('info-content').innerHTML = "No data found or CSV error.";
     });
