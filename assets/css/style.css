@@ -28,13 +28,34 @@ header {
     filter: grayscale(0.5) contrast(1.2) brightness(1.15) saturate(2.5) hue-rotate(-5deg);
 }
 
+/* 右側パネルの中身を整理 */
 #data-panel {
-    flex-basis: 33.3%;
-    width: 33.3%;
-    background-color: #ffffff;
-    padding: 20px;
-    overflow-y: auto;
-    border-left: 2px solid #e67e22;
+    padding: 25px; /* 余白を少し広げて高級感を出す */
+    line-height: 1.8; /* 行間を広くして読みやすく */
+}
+
+/* 詳細エリアの見出し */
+#info-content h4 {
+    font-size: 1.4rem;
+    color: #333;
+    margin: 10px 0;
+    border-bottom: 2px solid #e67e22; /* 下線をつけてタイトルを強調 */
+    padding-bottom: 5px;
+}
+
+/* 詳細の本文（pタグ） */
+#info-content p {
+    font-size: 1rem;
+    color: #444;
+    white-space: pre-wrap; /* これを入れるとCSV内の改行がそのまま反映されます！ */
+    margin-bottom: 20px;
+}
+
+/* 画像などを入れたくなった時用の設定 */
+#info-content img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 10px 0;
 }
 
 /* 一覧・詳細の装飾（前回の追加分をここにまとめる） */
