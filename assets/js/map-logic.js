@@ -53,13 +53,25 @@ function updateVisibleList() {
 }
 
 /**
- * リストから名前でデータを検索して詳細を表示する
+ * リストから名前でデータを検索して詳細を表示し、地図上の吹き出しも開く
  */
 window.showDetailsFromName = function(name) {
     const loc = allLocations.find(l => (l.name_ja === name || l.name_en === name));
     if (loc) {
         isDetailView = true; 
         map.panTo([loc.lat, loc.lng]); 
+
+        // 地図上の全レイヤーから一致するマーカーを探して、吹き出しを強制的に開く
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Marker) {
+                const latLng = layer.getLatLng();
+                // 座標が一致するかチェック
+                if (latLng.lat === loc.lat && latLng.lng === loc.lng) {
+                    layer.openPopup(); 
+                }
+            }
+        });
+
         showDetails(loc); 
     }
 };
@@ -99,7 +111,7 @@ function showDetails(loc) {
  */
 window.closeDetails = function() {
     isDetailView = false; 
-    map.closePopup(); // 【追加】パネルを閉じた時、地図上の吹き出しも閉じる
+    map.closePopup(); 
     updateVisibleList();  
 };
 
@@ -149,32 +161,27 @@ fetch('../../assets/data/zarigani.csv')
             }
             popupHtml += `</div>`;
 
-           // --- fetch 処理の中、marker.bindPopup(popupHtml); の後を書き換え ---
+            marker.bindPopup(popupHtml);
 
-marker.bindPopup(popupHtml);
+            // 吹き出しが閉じられた時の処理（iPad用ラグ解消版）
+            marker.on('popupclose', function() {
+                setTimeout(() => {
+                    let isOpen = false;
+                    map.eachLayer(function(layer) {
+                        if (layer instanceof L.Popup && map.hasLayer(layer)) {
+                            isOpen = true;
+                        }
+                    });
+                    if (!isOpen) {
+                        closeDetails();
+                    }
+                }, 200); 
+            });
 
-// 【修正版】吹き出しが閉じられた時の処理
-marker.on('popupclose', function() {
-    // 0.2秒だけ待ってからチェック（別のピンへの切り替え中ではないか確認）
-    setTimeout(() => {
-        // 地図上に開いているポップアップが一つもなければ、リストに戻す
-        let isOpen = false;
-        map.eachLayer(function(layer) {
-            if (layer instanceof L.Popup && map.hasLayer(layer)) {
-                isOpen = true;
-            }
-        });
-
-        if (!isOpen) {
-            closeDetails();
-        }
-    }, 200); 
-});
-
-// ピンをクリックした時に右パネルも連動
-marker.on('click', () => {
-    showDetails(locData);
-});
+            // ピンをクリックした時に右パネルも連動
+            marker.on('click', () => {
+                showDetails(locData);
+            });
         }
         
         updateVisibleList(); 
