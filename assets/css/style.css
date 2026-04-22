@@ -2,14 +2,31 @@
     box-sizing: border-box;
 }
 /* 全体のレイアウト */
+/* 1. 全体の設定 */
 body {
+    /* フォント設定 */
+    font-family: 
+        "BIZ UDPGothic", 
+        "Hiragino Sans", 
+        "Hiragino Kaku Gothic ProN", 
+        "Noto Sans JP", 
+        "Meiryo", 
+        sans-serif;
+
     margin: 0;
     display: flex;
     flex-direction: column;
     height: 100vh;
     overflow: hidden; /* 画面全体がガタガタ動かないように固定 */
+    -webkit-font-smoothing: antialiased; /* 文字を滑らかに */
 }
 
+/* 2. タイトルの設定（bodyの外に書く） */
+h1, h3, h4 {
+    font-family: inherit; /* bodyのフォントを引き継ぐ */
+    font-weight: 700;
+    margin: 0; /* 余計な余白をカット */
+}
 header {
     background-color: #e67e22;
     color: white;
