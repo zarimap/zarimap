@@ -149,20 +149,32 @@ fetch('../../assets/data/zarigani.csv')
             }
             popupHtml += `</div>`;
 
-            marker.bindPopup(popupHtml);
+           // --- fetch 処理の中、marker.bindPopup(popupHtml); の後を書き換え ---
 
-            // 【追加機能】吹き出しが閉じられた時、詳細パネルもリストに戻す
-            marker.on('popupclose', function() {
-                // 他のピンをクリックして新しい吹き出しが開く場合は無視する
-                if (!map._popupOpen) { 
-                    closeDetails();
-                }
-            });
+marker.bindPopup(popupHtml);
 
-            // ピンをクリックした時に右パネルも連動
-            marker.on('click', () => {
-                showDetails(locData);
-            });
+// 【修正版】吹き出しが閉じられた時の処理
+marker.on('popupclose', function() {
+    // 0.2秒だけ待ってからチェック（別のピンへの切り替え中ではないか確認）
+    setTimeout(() => {
+        // 地図上に開いているポップアップが一つもなければ、リストに戻す
+        let isOpen = false;
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Popup && map.hasLayer(layer)) {
+                isOpen = true;
+            }
+        });
+
+        if (!isOpen) {
+            closeDetails();
+        }
+    }, 200); 
+});
+
+// ピンをクリックした時に右パネルも連動
+marker.on('click', () => {
+    showDetails(locData);
+});
         }
         
         updateVisibleList(); 
