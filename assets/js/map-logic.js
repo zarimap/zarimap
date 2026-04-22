@@ -99,6 +99,7 @@ function showDetails(loc) {
  */
 window.closeDetails = function() {
     isDetailView = false; 
+    map.closePopup(); // 【追加】パネルを閉じた時、地図上の吹き出しも閉じる
     updateVisibleList();  
 };
 
@@ -130,7 +131,6 @@ fetch('../../assets/data/zarigani.csv')
             const desc = (currentLang === 'ja') ? locData.desc_ja : locData.desc_en;
             const popupLabel = (currentLang === 'ja') ? '詳細サイトへ' : 'Visit Site';
             
-            // 説明文を30文字でカット
             const shortDesc = desc.length > 30 ? desc.substring(0, 30) + "..." : desc;
 
             let popupHtml = `
@@ -150,6 +150,14 @@ fetch('../../assets/data/zarigani.csv')
             popupHtml += `</div>`;
 
             marker.bindPopup(popupHtml);
+
+            // 【追加機能】吹き出しが閉じられた時、詳細パネルもリストに戻す
+            marker.on('popupclose', function() {
+                // 他のピンをクリックして新しい吹き出しが開く場合は無視する
+                if (!map._popupOpen) { 
+                    closeDetails();
+                }
+            });
 
             // ピンをクリックした時に右パネルも連動
             marker.on('click', () => {
