@@ -23,14 +23,16 @@ let isDetailView = false; // 詳細表示中かどうかを管理するフラグ
  * 右側のパネルを「今見えている範囲のリスト」に書き換える
  */
 function updateVisibleList() {
-    // 詳細を表示している最中なら、リストの更新を中止する
+    // 詳細を表示している最中（カード表示中）なら、リストの更新を中止する
     if (isDetailView) return;
 
     const infoContent = document.getElementById('info-content');
+    if (!infoContent) return;
+
     const listTitle = (currentLang === 'ja') ? 'このエリアの生息地' : 'Habitats in this area';
-    
     const bounds = map.getBounds();
 
+    // 現在の表示範囲に含まれるデータだけを抽出
     const visibleLocations = allLocations.filter(loc => {
         return bounds.contains([loc.lat, loc.lng]);
     });
@@ -43,6 +45,7 @@ function updateVisibleList() {
         html += `<ul id="location-list">`;
         visibleLocations.forEach((loc) => {
             const name = (currentLang === 'ja') ? loc.name_ja : loc.name_en;
+            // 名前の中にシングルクォートがあっても壊れないようにエスケープ
             const safeName = name.replace(/'/g, "\\'");
             html += `<li onclick="showDetailsFromName('${safeName}')">${name}</li>`;
         });
@@ -53,7 +56,7 @@ function updateVisibleList() {
 }
 
 /**
- * リストから名前でデータを検索して詳細を表示し、地図上の吹き出しも開く
+ * 【新機能】リストから名前で検索して詳細を表示し、地図上の吹き出しも強制的に開く
  */
 window.showDetailsFromName = function(name) {
     const loc = allLocations.find(l => (l.name_ja === name || l.name_en === name));
@@ -61,11 +64,10 @@ window.showDetailsFromName = function(name) {
         isDetailView = true; 
         map.panTo([loc.lat, loc.lng]); 
 
-        // 地図上の全レイヤーから一致するマーカーを探して、吹き出しを強制的に開く
+        // 地図上の全レイヤーから一致するマーカーを探して、吹き出しを開く
         map.eachLayer(function(layer) {
             if (layer instanceof L.Marker) {
                 const latLng = layer.getLatLng();
-                // 座標が一致するかチェック
                 if (latLng.lat === loc.lat && latLng.lng === loc.lng) {
                     layer.openPopup(); 
                 }
@@ -77,7 +79,7 @@ window.showDetailsFromName = function(name) {
 };
 
 /**
- * 右側のパネルに「詳細情報」を表示する
+ * 右側のパネルに「詳細情報カード」を表示する
  */
 function showDetails(loc) {
     isDetailView = true; 
@@ -107,12 +109,12 @@ function showDetails(loc) {
 }
 
 /**
- * 詳細を閉じてリストに戻るための関数
+ * 詳細を閉じてリストに戻る（地図の吹き出しも閉じる）
  */
 window.closeDetails = function() {
     isDetailView = false; 
-    map.closePopup(); 
-    updateVisibleList();  
+    map.closePopup(); // 地図上の吹き出しを閉じる
+    updateVisibleList(); // リスト表示に更新
 };
 
 // 3. CSVファイルを読み込んで処理する
@@ -136,13 +138,13 @@ fetch('../../assets/data/zarigani.csv')
 
             allLocations.push(locData);
 
+            // マーカー作成
             const marker = L.marker([locData.lat, locData.lng]).addTo(map);
 
-            // --- 吹き出し（ポップアップ）のリッチ化 ---
+            // ポップアップ（吹き出し）の内容作成
             const name = (currentLang === 'ja') ? locData.name_ja : locData.name_en;
             const desc = (currentLang === 'ja') ? locData.desc_ja : locData.desc_en;
             const popupLabel = (currentLang === 'ja') ? '詳細サイトへ' : 'Visit Site';
-            
             const shortDesc = desc.length > 30 ? desc.substring(0, 30) + "..." : desc;
 
             let popupHtml = `
@@ -162,8 +164,8 @@ fetch('../../assets/data/zarigani.csv')
             popupHtml += `</div>`;
 
             marker.bindPopup(popupHtml);
-
-            // 吹き出しが閉じられた時の処理（iPad用ラグ解消版）
+            
+            // 【iPad/スマホ対応】吹き出しが閉じられた時の連動
             marker.on('popupclose', function() {
                 setTimeout(() => {
                     let isOpen = false;
@@ -172,22 +174,21 @@ fetch('../../assets/data/zarigani.csv')
                             isOpen = true;
                         }
                     });
+                    // 他に開いているポップアップがなければ、パネルをリストに戻す
                     if (!isOpen) {
                         closeDetails();
                     }
                 }, 200); 
             });
-
             // ピンをクリックした時に右パネルも連動
             marker.on('click', () => {
                 showDetails(locData);
             });
         }
-        
+         // 初回読み込み完了後にリストを表示
         updateVisibleList(); 
     });
-
 /**
- * 4. 地図が動いた時にリストを更新する設定
+ * 4. 地図が動いた時にリストを更新する（移動終了イベント）
  */
 map.on('moveend', updateVisibleList);
