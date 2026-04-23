@@ -121,32 +121,31 @@ header {
     margin-left: 10px;
     color: #ffe0b2;
 }
-
 /* -------------------------------------------
     スマホ対応 (画面幅が768px以下の時)
 ------------------------------------------- */
 @media (max-width: 768px) {
     header {
-        padding: 8px 10px;
-        height: auto;           /* 中身（2段分）に合わせて広がる */
-        max-height: 100px;      /* 3段目に行かないよう高さを制限 */
+        padding: 8px 15px; /* 左右の余白を少し調整 */
+        height: auto;
+        max-height: 100px;
         overflow: hidden;
     }
 
     .header-inner {
-        flex-direction: column; /* ロゴとメニューを上下に分ける */
+        flex-direction: column; 
+        align-items: flex-start; /* 【追加】中身をすべて左揃えにする */
         gap: 6px;
     }
 
     .pc-only {
-        display: none;          /* メニューの引き算（スマホでは消す） */
+        display: none;
     }
 
     h1 {
         font-size: 1.1rem;
         max-width: 100%;
-        text-align: center;
-        /* スマホでもタイトルは1行（2行を超えない） */
+        text-align: left; /* 【修正】タイトルを左揃えに */
         display: -webkit-box;
         -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
@@ -157,13 +156,13 @@ header {
         display: none;
     }
 
-    /* メニュー段：2列（2行）まで許可する設定 */
+    /* メニュー段：2列まで。ここも左揃えに変更 */
     .header-nav ul {
-        flex-wrap: wrap;        /* 横に並ばないときは2行目へ */
-        justify-content: center;
-        gap: 6px 10px;          /* 縦の間隔6px, 横10px */
-        max-height: 45px;       /* 3行目に行かないように高さを制限 */
-        overflow: hidden;       /* はみ出したメニューは隠す */
+        flex-wrap: wrap;
+        justify-content: flex-start; /* 【修正】ボタンを左から並べる */
+        gap: 6px 8px; /* ボタン同士の間隔を少し調整 */
+        max-height: 45px;
+        overflow: hidden;
     }
 
     .header-nav a {
@@ -171,16 +170,14 @@ header {
         font-size: 0.8rem;
     }
 
-    /* メインエリアの縦並び切り替え */
+    /* 以下、メインエリアの設定はそのまま */
     .main-container { 
         flex-direction: column; 
     }
-
     #map { 
         flex-basis: 40vh; 
         width: 100%; 
     }
-
     #data-panel { 
         flex-basis: 60vh; 
         width: 100%; 
