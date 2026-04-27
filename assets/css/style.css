@@ -34,41 +34,36 @@ h1 {
     max-width: 60%;          /* メニュー用のスペースを確保 */
 }
 
+/* PC版の共通設定を上書き・強化 */
 header {
-    background-color: #e67e22;
-    color: white;
-    padding: 10px 20px;
-    flex-shrink: 0;
-    height: 60px;            /* PC版のヘッダー高さを固定 */
+    display: flex;
+    align-items: center;    /* 上下中央 */
+    height: 60px;
+    padding: 0 20px;
+    box-sizing: border-box; /* 枠線を含めて60pxにする */
 }
 
 .header-inner {
+    width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    height: 100%;
-    max-width: 100%;
+    align-items: center;    /* 上下中央 */
+    height: 100%;           /* headerの60pxいっぱいに広がる */
 }
 
-.header-nav ul {
+.header-nav, .header-nav ul {
     display: flex;
-    list-style: none;
+    align-items: center;    /* ボタンたちを上下中央に一列に並べる */
+    height: 100%;
     margin: 0;
-    padding: 0;
-    gap: 15px;
-    flex-wrap: nowrap;       /* メニューを1行に強制 */
 }
 
 .header-nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 0.9rem;
-    padding: 6px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    white-space: nowrap;     /* ボタン内の文字も改行させない */
+    /* ボタン自体の高さを固定せず、パディングで調整 */
+    padding: 5px 12px;
+    line-height: 1;         /* 文字の高さを最小限に */
+    display: flex;
+    align-items: center;    /* ボタン内の文字も中央に */
 }
 
 /* 3. メインコンテンツの設定 */
