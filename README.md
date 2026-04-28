@@ -12,5 +12,5 @@
 
 # お問い合わせ
 <ul>
-  <li><a href>https://sites.google.com/view/dzt/otoiawase</a></li>
+  <li><a href>https://forms.gle/Dfj5AQeogmUd4FfQ7</a></li>
 </ul>
