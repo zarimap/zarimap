@@ -15,5 +15,5 @@
 
 # お問い合わせ
 <ul>
-  <li>お問い合わせは<a href="https://sites.google.com/view/dzt/" target="_blank" rel="noopener noreferrer">こちら</a>から</li>
+  <li>お問い合わせは<a href="https://sites.google.com/view/dzt/otoiawase/" target="_blank" rel="noopener noreferrer">こちら</a>から</li>
 </ul>
