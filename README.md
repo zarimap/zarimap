@@ -12,5 +12,5 @@
 
 # お問い合わせ
 <ul>
-  <li><a href>https://forms.gle/Dfj5AQeogmUd4FfQ7</a></li>
+  <li>お問い合わせは<a href="https://forms.gle/Dfj5AQeogmUd4FfQ7">こちら</a>のフォームから</li>
 </ul>
