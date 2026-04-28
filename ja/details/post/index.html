@@ -102,6 +102,25 @@
         header {
     position: relative !important; /* 固定を解除して、普通の流れに戻す */
 }
+        /* すべての固定設定を解除してスクロールを強制する */
+html, body {
+    overflow-y: auto !important; /* 縦スクロールを強制許可 */
+    overflow-x: hidden !important; /* 横揺れは防ぐ */
+    height: auto !important;     /* 高さを自動に */
+    position: static !important; /* 画面固定を解除 */
+}
+
+body {
+    display: block !important;   /* Flexboxの縛りから解放 */
+}
+
+/* ページ全体のコンテナに十分な高さを確保 */
+.post-container {
+    display: block !important;
+    position: relative !important;
+    padding-bottom: 100px !important; /* 下の方に大きな余白を作る */
+    min-height: 1000px; /* テスト用にわざと長くする */
+}
     </style>
 </head>
 <body>
