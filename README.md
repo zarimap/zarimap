@@ -12,5 +12,5 @@
 
 # お問い合わせ
 <ul>
-  <li><a>https://sites.google.com/view/dzt/</a></li>
+  <li><a href>https://sites.google.com/view/dzt/</a></li>
 </ul>
